@@ -8,9 +8,10 @@ import {
 } from 'react-native';
 
 class PhoneBtn extends React.Component {
+    goToLoginWithPhoneScreen = () => { this.props.navigation.navigate('loginWithPhone') }
     render(){
         return (
-            <TouchableOpacity style={styles.connection_btn}>
+            <TouchableOpacity style={styles.connection_btn} onPress={this.goToLoginWithPhoneScreen}>
                 <Image source={require('../../../../assets/img/phone_logo.png')} style={styles.logo}/>
                 <Text style={styles.btn_content}>Avec votre numéro !</Text>
             </TouchableOpacity>
