@@ -9,11 +9,11 @@ import {
 } from 'react-native';
 
 class LoginHeader extends React.Component {
-    goToLandingScreen = () => { this.props.navigation.navigate('landing') }
+    goBack = () => { this.props.navigation.goBack(null) }
     render(){
         return (
             <View style={styles.nav}>
-                <TouchableOpacity style={styles.back} onPress={this.goToLandingScreen}>
+                <TouchableOpacity style={styles.back} onPress={this.goBack}>
                     <Image source={require('./../assets/img/left-chevron.png')} style={styles.icon}/>
                 </TouchableOpacity>
                 <Text style={styles.nav_title}>Connexion</Text>
