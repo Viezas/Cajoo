@@ -1,20 +1,25 @@
 import React from 'react';
 import {
-    TouchableOpacity,
     Dimensions,
     StyleSheet,
     Text,
+    TouchableOpacity,
     View,
 } from 'react-native';
 
 class ActionsContainer extends React.Component {
+    goToLoginScreen = () => {
+        this.props.navigation.navigate('login')
+    }
     render(){
         return (
             <View style={styles.actions_container}>
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity style={styles.button} onPress={this.goToLoginScreen}>
                     <Text style={styles.button_content}>Me connecter 👋</Text>
                 </TouchableOpacity>
-                <Text style={styles.link}>Découvrir l'app</Text>
+                <TouchableOpacity>
+                    <Text style={styles.link}>Découvrir l'app</Text>
+                </TouchableOpacity>
             </View>
         );
     }
@@ -31,7 +36,7 @@ const styles = StyleSheet.create({
     },
     button: {
         backgroundColor: 'red',
-        width: width*0.7,
+        width: width*0.9,
         height: height*0.07,
         display: 'flex',
         alignItems: 'center',

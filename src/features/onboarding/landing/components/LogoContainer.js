@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     logo:{
-        width: width*0.9,
+        width: width*0.7,
         resizeMode: 'contain',
     },
     sub_title: {
