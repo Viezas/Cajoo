@@ -9,8 +9,58 @@ import {
     View,
 } from 'react-native';
 import LoginHeader from '../../../components/LoginHeader';
+import { Auth } from 'aws-amplify'
 
 class LoginForm extends React.Component {
+    constructor(props){
+        super(props)
+        this.state = {
+            phone: '',
+            can_continue: false,
+        }
+    }
+
+    onChangePhone = (phone) => {
+        let can_continue = false
+        this.setState({
+            phone
+        })
+        if(phone.length == 9){
+            can_continue = true;
+        }
+        this.setState({
+            can_continue
+        })
+    }
+
+    login = async () => {
+        const { phone } = this.state
+        try {
+            const { user } = await Auth.signUp({
+                username: `+33${phone}`,
+                password: 'Password-1234'
+            });
+            this.props.navigation.navigate('resetPassword', {username: `+33${phone}`})
+        } catch (error) {
+            if (error.code == "UsernameExistsException") {
+                try {
+                    const user = await Auth.signIn(`+33${phone}`, 'Password-1234');
+                    this.props.navigation.navigate('loggedIn')
+                } catch (error) {
+                    if (error.code == "UserNotConfirmedException") { 
+                        this.props.navigation.navigate('resetPassword', {username: `+33${phone}`})
+                    } 
+                    else {
+                        console.log('error signing in', error);
+                    }
+                }
+            }
+            else {
+                console.log('error signing up:', error);
+            }
+        }
+    }
+
     render(){
         return (
             <View>
@@ -21,7 +71,13 @@ class LoginForm extends React.Component {
                             <Image source={require('../../../assets/img/french_logo.png')} style={styles.logo}/>
                         </View>
                         <Text style={styles.text_bold}> +33 </Text>
-                        <TextInput keyboardType="phone-pad" style={styles.input} autoFocus></TextInput>
+                        <TextInput  
+                            onChangeText={newValue => this.onChangePhone(newValue)}
+                            keyboardType="phone-pad" 
+                            style={styles.input} 
+                            value={this.state.phone}
+                            autoFocus >
+                        </TextInput>
                     </View>
                     <View style={styles.disclaimer}>
                         <Text style={styles.text}>En cliquant sur "CONTINUER", vous acceptez la </Text>
@@ -38,7 +94,11 @@ class LoginForm extends React.Component {
                         </TouchableOpacity>
                         <Text style={styles.text}> de Cajoo</Text>
                     </View>
-                    <TouchableOpacity style={styles.btn}>
+                    <TouchableOpacity 
+                        style={this.state.can_continue ? styles.btn : styles.disabled} 
+                        disabled={!this.state.can_continue}
+                        onPress={this.login}
+                    >
                         <Text style={styles.btn_content}>CONTINUER</Text>
                     </TouchableOpacity>
                 </View>
@@ -123,6 +183,17 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 18,
         fontWeight: 'bold'
-    }
+    },
+    disabled: {
+        backgroundColor: '#ca5d5d',
+        width: width*0.9,
+        height: height*0.07,
+        borderRadius: 10,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'absolute',
+        bottom: 350,
+    },
 })
 export default LoginForm;
